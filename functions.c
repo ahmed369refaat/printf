@@ -1,121 +1,143 @@
 #include "main.h"
 
+#include <stdarg.h>
+#include <stdio.h>
 
-/**
- * print_char - Prints a character
- * @types: List of arguments
- * @buffer: Buffer array to handle print
- * @flags:  Calculates active flags
- * @width: Width
- * @precision: Precision specification
- * @size: Size specifier
- * Return: Number of characters printed
- */
-int print_char(va_list types, char buffer[],
-        int flags, int width, int precision, int size)
-{
-    char c = (char)va_arg(types, int);
-    buffer[0] = c;
-    return handle_print(buffer, 1, flags, width);
+#define UNUSED(x) (void)(x)
+
+#define BUFF_SIZE 1024
+
+enum {
+    F_MINUS = 1,
+    F_PLUS = 2,
+    F_SPACE = 4,
+    F_HASH = 8,
+    F_ZERO = 16
+};
+
+int handle_write_char(char c, char buffer[], int flags, int width, int precision, int size) {
+    int i = 0;
+
+    UNUSED(flags);
+    UNUSED(width);
+    UNUSED(precision);
+    UNUSED(size);
+
+    if (buffer != NULL) {
+        buffer[i] = c;
+        i++;
+    } else {
+        i += putchar(c);
+    }
+
+    return i;
 }
 
+int write_number(int is_negative, int i, char buffer[], int flags, int width, int precision, int size) {
+    int j, k;
+    char pad_char = ' ';
+    int pad_count = 0;
+    int len = BUFF_SIZE - 2 - i;
 
+    UNUSED(size);
 
-/************************* PRINT STRING *************************/
+    if (flags & F_ZERO) {
+        pad_char = '0';
+    }
 
-/**
+    if (is_negative) {
+        len--;
+    }
 
- * print_string - Prints a string
+    if (precision > len) {
+        pad_count = precision - len;
+        len = precision;
+    }
 
- * @types: List a of arguments
+    if (width > len) {
+        pad_count += width - len;
+    }
 
- * @buffer: Buffer array to handle print
+    if (!(flags & F_MINUS)) {
+        for (j = 0; j < pad_count; j++) {
+            putchar(pad_char);
+        }
+    }
 
- * @flags: Calculates active flags
+    if (is_negative) {
+        putchar('-');
+    }
 
- * @width: Width
+    if (buffer != NULL) {
+        for (k = BUFF_SIZE - 2 - len; k < i; k++) {
+            putchar(buffer[k]);
+        }
+    }
 
- * @precision: Precision specification
+    for (j = 0; j < pad_count; j++) {
+        putchar(pad_char);
+    }
 
- * @size: Size specifier
-
- * Return: Number of chars printed
-
- */
-
-int print_string(va_list types, char buffer[],
-
-                int flags, int width, int precision, int size)
-
-{
-
-        char *str = va_arg(types, char *);
-
-        if (str == NULL)
-
-                str = "(null)";
-
-
-        return (handle_write_string(str, buffer, flags, width, precision, size));
-
-}
-
-/************************* PRINT INT *************************/
-
-/**
-
- * print_int - Print int
-
- * @types: Lista of arguments
-
- * @buffer: Buffer array to handle print
-
- * @flags:  Calculates active flags
-
- * @width: get width.
-
- * @precision: Precision specification
-
- * @size: Size specifier
-
- * Return: Number of chars printed
-
- */
-
-
-int main() {
-    int num = 42;
-    printf("%d", num);  // prints "42"
-    return 0;
-}
-
-
-
-/************************* PRINT BINARY *************************/
-
-/**
-
- * print_binary - Prints an unsigned number
-
- * @types: Lista of arguments
-
- * @buffer: Buffer array to handle print
-
- * @flags:  Calculates active flags
-
- * @width: get width.
-
- * @precision: Precision specification
-
- * @size: Size specifier
-
- * Return: Numbers of char printed.
-
- */
-
-void print_binary(unsigned int num) {
-    int i;
-    for (i = sizeof(num) * 8 - 1; i >= 0; i--) {
-        printf("%d", (num >> i) & 1);
+    if (buffer == NULL) {
+        return len;
+    } else {
+        return len + pad_count;
     }
 }
+
+long int convert_size_number(long int num, int size) {
+    switch (size) {
+        case 1:
+            return (char)num;
+        case 2:
+            return (short int)num;
+        case 3:
+        case 0:
+            return num;
+        case 4:
+            return (long int)num;
+        default:
+            return num;
+    }
+}
+
+int print_char(va_list types, char buffer[], int flags, int width, int precision, int size) {
+    char c = va_arg(types, int);
+    return handle_write_char(c, buffer, flags, width, precision, size);
+}
+
+int print_string(va_list types, char buffer[], int flags, int width, int precision, int size) {
+    int length = 0, i;
+    char *str = va_arg(types, char *);
+
+    UNUSED(buffer);
+    UNUSED(flags);
+    UNUSED(width);
+    UNUSED(precision);
+    UNUSED(size);
+
+    if (str == NULL) {
+        str = "(null)";
+        if (precision >= 6) {
+            str = "      ";
+        }
+    }
+
+    while (str[length] != '\0') {
+        length++;
+    }
+
+    if (precision >= 0 && precision < length) {
+        length = precision;
+    }
+
+    if (width > length) {
+        if (flags & F_MINUS) {
+            putchar(str[0]);
+            for (i = width - length; i > 0; i--) {
+                putchar(' ');
+            }
+            return width;
+        } else {
+            for (i = width - length; i > 0; i--) {
+               
