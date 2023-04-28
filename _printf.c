@@ -12,17 +12,7 @@ int _printf(const char *format, ...)
             i++;
             switch (format[i])
             {
-                case 'd':
-                {
-                    int x = va_arg(args, int);
-                    printf("%d", x);
-                    break;
-                }
-                case 'f':
-                {
-                    double x = va_arg(args, double);
-                    printf("%f", x);
-                    break;
+              
                 }
                 case 'c':
                 {
@@ -34,19 +24,6 @@ int _printf(const char *format, ...)
                 {
                     char *x = va_arg(args, char*);
                     printf("%s", x);
-                    break;
-                }
-                case 'x':
-                case 'X':
-                {
-                    int x = va_arg(args, int);
-                    printf("%x", x);
-                    break;
-                }
-                case 'p':
-                {
-                    void *x = va_arg(args, void*);
-                    printf("%p", x);
                     break;
                 }
                 case '%':
