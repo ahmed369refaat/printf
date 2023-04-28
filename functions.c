@@ -20,7 +20,8 @@ int print_char(va_list types, char buffer[],
 }
 
 
-/************************* PRINT A STRING *************************/
+
+/************************* PRINT STRING *************************/
 
 /**
 
@@ -30,9 +31,9 @@ int print_char(va_list types, char buffer[],
 
  * @buffer: Buffer array to handle print
 
- * @flags:  Calculates active flags
+ * @flags: Calculates active flags
 
- * @width: get width.
+ * @width: Width
 
  * @precision: Precision specification
 
@@ -42,12 +43,21 @@ int print_char(va_list types, char buffer[],
 
  */
 
-int main() {
-    char str[] = "Hello, world!";
-    
-    printf("%s", str);
+int print_string(va_list types, char buffer[],
 
-    return 0;
+                int flags, int width, int precision, int size)
+
+{
+
+        char *str = va_arg(types, char *);
+
+        if (str == NULL)
+
+                str = "(null)";
+
+
+        return (handle_write_string(str, buffer, flags, width, precision, size));
+
 }
 
 /************************* PRINT INT *************************/
