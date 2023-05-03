@@ -8,9 +8,9 @@ void print_buffer(char buffer[], int *buff_ind);
  */
 int myprintf(const char *format, ...)
 {
-int i = 0;
 va_list p;
 va_start(p, format);
+int i = 0;
 while (format[i])
 {
 if (format[i] == '%')
