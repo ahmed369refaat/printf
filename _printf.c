@@ -10,7 +10,7 @@ int myprintf(const char *format, ...)
 {
 int i = 0;
 va_list p;
-va_start(format, p);
+va_start(p, format);
 while (format[i])
 {
 if (format[i] == '%')
