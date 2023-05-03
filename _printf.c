@@ -31,7 +31,7 @@ break;
 }
 case 'c':
 {
-int x = va_arg(p, int);
+int x = va_arg(p, char);
 printf("%c", x);
 break;
 }
