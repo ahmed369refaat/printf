@@ -73,7 +73,7 @@ struct fmt
 typedef struct fmt fmt_t;
 
 
-int myprintf(const char *format, ...);
+int my_printf(const char *format, ...);
 
 int handle_print(const char *fmt, int *i,
 
