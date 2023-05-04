@@ -5,7 +5,7 @@
  * myprintf - Printf function.
  * Return: Printed chars.
  */
-int my_printf(const char *format, ...)
+int _printf(const char *format, ...)
 {
     va_list args;
     va_start(args, format);
